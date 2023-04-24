@@ -29,9 +29,6 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 /* import specific icons */
 import { faUserSecret } from '@fortawesome/free-solid-svg-icons'
 
-/* import font awesome icon component */
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-
 import 'gitart-vue-dialog/dist/style.css'
 import { GDialog } from 'gitart-vue-dialog'
 import { plugin as dialogPlugin } from 'gitart-vue-dialog'
@@ -46,7 +43,7 @@ const app = createApp(App)
 
 const socketIO = new VueSocketIO({
   debug: true,
-  connection: 'http://localhost:8080',
+  connection: 'http://localhost:3000',
  })
 
 app.use(createPinia())
