@@ -43,7 +43,7 @@ const app = createApp(App)
 
 const socketIO = new VueSocketIO({
   debug: true,
-  connection: 'http://localhost:3000',
+  connection: 'http://' + process.env.VUE_APP_SOCKETSIP + ':3000',
  })
 
 app.use(createPinia())
@@ -60,7 +60,7 @@ app.use(dialogPlugin)
 app.use(Toaster, toastOptions)
 app.use(socketIO)
 
-axios.defaults.baseURL = "http://127.0.0.1:8000/api";
+axios.defaults.baseURL = "http://" + process.env.VUE_APP_LARAVELIP + ":8000/api";
 app.config.globalProperties.$serverUrl = "http://127.0.0.1:8000/";
 axios.defaults.headers.common["Authorization"] = `Bearer ${
     sessionStorage.tokenAluno ? sessionStorage.tokenAluno : (sessionStorage.tokenAdmin ? sessionStorage.tokenAdmin : (sessionStorage.tokenCoordenador ? sessionStorage.tokenCoordenador : (sessionStorage.tokenProfessor ? sessionStorage.tokenProfessor : "")))
