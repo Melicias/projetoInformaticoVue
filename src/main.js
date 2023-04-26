@@ -43,7 +43,7 @@ const app = createApp(App)
 
 const socketIO = new VueSocketIO({
   debug: true,
-  connection: typeof process.env.VITE_SOCKETSIP !== 'undefined' ? "http://" + process.env.VITE_SOCKETSIP + ":3000" : "http://" + import.meta.env.VITE_SOCKETSIP + ":3000",
+  connection: typeof process.env.VITE_SOCKETSIP !== 'undefined' ? "http://" + process.env.VITE_SOCKETSIP + ":3001" : "http://" + import.meta.env.VITE_SOCKETSIP + ":3001",
  })
 
 app.config.globalProperties.$serverUrl = "http://127.0.0.1:8000/";
