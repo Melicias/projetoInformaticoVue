@@ -43,11 +43,10 @@ const app = createApp(App)
 
 const socketIO = new VueSocketIO({
   debug: true,
-  connection: typeof process.env.VITE_SOCKETSIP !== 'undefined' ? "http://" + process.env.VITE_SOCKETSIP + ":8080" : "http://" + import.meta.env.VITE_SOCKETSIP + ":8080",
+  connection: typeof process !== 'undefined' ? "http://" + process.env.VITE_SOCKETSIP + ":8080" : "http://" + import.meta.env.VITE_SOCKETSIP + ":8080",
  })
 
 app.config.globalProperties.$serverUrl = "http://127.0.0.1:8000/";
-process.env.VUE_APP_SOCKETSIP
 app.use(createPinia())
 app.use(router)
 app.use(bootstrap)
@@ -62,7 +61,7 @@ app.use(dialogPlugin)
 app.use(Toaster, toastOptions)
 app.use(socketIO)
 
-axios.defaults.baseURL = typeof process.env.VUE_APP_LARAVELIP !== 'undefined' ? "http://" + process.env.VUE_APP_LARAVELIP + ":8000/api" : "http://" + import.meta.env.VITE_LARAVELIP + ":8000/api";
+axios.defaults.baseURL = typeof process !== 'undefined' ? "http://" + process.env.VUE_APP_LARAVELIP + ":8000/api" : "http://" + import.meta.env.VITE_LARAVELIP + ":8000/api";
 app.config.globalProperties.$serverUrl = "http://127.0.0.1:8000/";
 axios.defaults.headers.common["Authorization"] = `Bearer ${
     sessionStorage.tokenAluno ? sessionStorage.tokenAluno : (sessionStorage.tokenAdmin ? sessionStorage.tokenAdmin : (sessionStorage.tokenCoordenador ? sessionStorage.tokenCoordenador : (sessionStorage.tokenProfessor ? sessionStorage.tokenProfessor : "")))

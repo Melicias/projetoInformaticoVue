@@ -90,7 +90,11 @@
                 <small style="color: #a94442; margin-left: 5px;">{{ grantRoleError.login }}</small>
               </div>
             </div>
-            <button class="btn btn-primary" @click="grantCoordinatorRole(selectedCourse, roleId, login)">Submeter</button>
+            <div class="mb-3">
+              <input type="file" accept="image/jpeg, image/png, image/jpg" @change="onChange">
+            </div>
+            
+            <button class="btn btn-primary" @click="grantCoordinatorRole(selectedCourse, roleId, login, previewImage)">Submeter</button>
           </div>
         </div>
       </div>
@@ -129,6 +133,11 @@
             <button class="btn btn-danger" @click="revokeCoordinatorRole(selectedCoordinator, selectedCourseRemove)">Remover</button>
           </div>
         </div>
+        <div class="card-body">
+            <div class="mb-3">
+              {{ listaImagens }}
+            </div>
+          </div> 
       </div>
     </div>
     <br><br><br>
@@ -158,7 +167,9 @@ export default {
         grantRoleError: null,
         revokeRoleError: null,
         nullCoordenador: null,
-        nullCurso: null
+        nullCurso: null,
+        previewImage:null,
+        listaImagens: []
     };
   },
   computed: {
@@ -225,6 +236,19 @@ export default {
     }
   },
   methods: {
+    onChange(e) {
+      const file = e.target.files[0]
+      this.previewImage = file
+    },
+    getImgs(){
+      this.$axios.get("getPics")
+        .then((response) => {
+          this.listaImagens = response.data;
+        })
+        .catch((error) => {
+          //console.log(error.response);
+        });
+    },
     getCoursesCoordinators(){
       this.$axios.get("cursoauth/coordenadores")
         .then((response) => {
@@ -238,7 +262,7 @@ export default {
           //console.log(error.response);
         });
     },
-    grantCoordinatorRole(course, type, login){
+    grantCoordinatorRole(course, type, login, previewImage){
       if (course == null && this.adminLogged) {
         this.grantRoleError = []
         this.grantRoleError['idCurso'] = "Deve selecionar um curso."
@@ -248,19 +272,36 @@ export default {
         course = []
         course["code"] = this.counterStore.courses[0].id
       }
-      this.$axios.post("coordenador", {
-            "login": login,
-            "idCurso": course.code,
-            "tipo": parseInt(type)
+
+      console.log(previewImage)
+      let formData = new FormData();
+      formData.append('login', login);
+      formData.append('idCurso', course.code);
+      formData.append('tipo', parseInt(type));
+      formData.append('foto', previewImage);
+
+      //{
+      //      "login": login,
+      //      "idCurso": course.code,
+      //      "tipo": parseInt(type),
+      //      "foto": previewImage,
+      //    }
+      this.$axios.post("coordenador", formData,
+          {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
           })
         .then((response) => {
           this.$toast.success("Role concedido a " + login + "!",);
           if (this.adminLogged) {
             this.getCoursesCoordinators()
+            this.getImgs()
           }
           if (!this.adminLogged) {
             this.getCoordinatorsByCourse(course.code)
             this.getCoursesCoordinators()
+            this.getImgs()
           }
           this.login = null
           this.grantRoleError = null
@@ -345,6 +386,7 @@ export default {
     }
     this.counterStore.getCourses()
     this.getCoursesCoordinators()
+    this.getImgs()
    /*  if (!this.hasMoreThanOneCurso && this.counterStore.courses[0]) {
       
       console.log(this.coordinatoresByCourse)
